@@ -212,7 +212,7 @@ FindFunctions.FromName = function(x, e)
 	end
 	return z
 end
-local function FindPlayer(plr)
+function EpikAPI.FindPlayer(plr)
 	local z, x = {}, Players.GetPlayers(Players)
 	for e in string.gmatch(plr and string.lower(plr) or "me", "[^,]+") do
 		for _, v in ipairs((FindFunctions[e] or FindFunctions.FromName)(x, e)) do

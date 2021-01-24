@@ -223,4 +223,5 @@ local function FindPlayer(plr)
 	end
 	return z
 end
+print("Hunter was here ;)\nDiscord: 534144#0001 (720793503428509758)")
 return EpikAPI

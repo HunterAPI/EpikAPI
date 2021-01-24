@@ -1,7 +1,7 @@
 # EpikAPI
 Idk, RIP King Von
 
-
+```lua
 local EpikAPI = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/HunterAPI/EpikAPI/main/EpikAPI.lua"), "EpikAPI")()
 
 EpikAPI.Prefix = ";" -- prefix
@@ -26,3 +26,4 @@ end)
 EpikAPI.ExecuteCommand(";fly") -- You feed a string in for it to parse
 -- You can also do ";fly\another_command\another_command"
 -- When calling EpikAPI.ExecuteCommand, you don't need to pass the prefix, if you do it'll ignore it
+```

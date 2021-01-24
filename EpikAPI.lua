@@ -86,7 +86,9 @@ local function RunCMDI(str)
 		args[i] = v
 	end
 	return coroutine.wrap(function()
-		return xpcall(Command, warn, unpack(args))
+		return xpcall(Command, function(msg)
+			return warn((string.gsub(debug.traceback(msg), "[\n\r]+", "\n    ")))
+		end, unpack(args))
 	end)()
 end
 function EpikAPI.ExecuteCommand(msg)

@@ -96,7 +96,7 @@ function EpikAPI.ExecuteCommand(msg)
 end
 function EpikAPI.Instance(a1, a2, a3)
 	if not a1 or type(a1) ~= "string" then
-		return warn("Invalid arguments for InstNew")
+		return warn("Invalid arguments for EpikAPI.Instance")
 	end
 	if a2 and type(a2) == "table" then
 		a3 = a2

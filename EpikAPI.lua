@@ -123,6 +123,11 @@ function EpikAPI.Instance(a1, a2, a3)
 	x.Parent = a2
 	return x
 end
+function EpikAPI.GetRoot(x)
+	x = x or ME.Character
+	local z = x and x.FindFirstChildWhichIsA(x, "Humanoid", true)
+	return (z and (z.RootPart or z.Torso)) or x.PrimaryPart or x.FindFirstChild(x, "HumanoidRootPart") or x.FindFirstChild(x, "Torso") or x.FindFirstChild(x, "UpperTorso") or x.FindFirstChild(x, "LowerTorso") or x.FindFirstChild(x, "Head") or x.FindFirstChildWhichIsA(x, "BasePart", true)
+end
 local FindFunctions = {}
 FindFunctions.me = function()
 	return {ME}
@@ -175,7 +180,7 @@ end
 FindFunctions.furthest = function(x)
 	local dist, z = 0, false
 	for _, v in ipairs(x) do
-		local x = v ~= ME and v.Character and GetRoot(v.Character)
+		local x = v ~= ME and v.Character and EpikAPI.GetRoot(v.Character)
 		if x then
 			local e = ME.DistanceFromCharacter(ME, x.Position)
 			if e and e > dist then
@@ -188,7 +193,7 @@ end
 FindFunctions.closest = function(x)
 	local dist, z = math.huge, false
 	for _, v in ipairs(x) do
-		local x = v ~= ME and v.Character and GetRoot(v.Character)
+		local x = v ~= ME and v.Character and EpikAPI.GetRoot(v.Character)
 		if x then
 			local e = ME.DistanceFromCharacter(ME, x.Position)
 			if e and e < dist then

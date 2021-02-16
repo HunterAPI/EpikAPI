@@ -1,4 +1,4 @@
-# EpikAPI || 485856#0001 720793503428509758
+# EpikAPI || 485856#1337 (810658528212549702)
 How to use:
 ```lua
 local EpikAPI = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/HunterAPI/EpikAPI/main/EpikAPI.lua"), "EpikAPI")()

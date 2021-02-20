@@ -29,7 +29,7 @@ EpikAPI.ExecuteCommand(";fly") -- You feed a string in for it to parse
 
 Basic example:
 ```lua
-local EpikAPI = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/HunterAPI/EpikAPI/main/EpikAPI.lua"), "EpikAPI")()
+local EpikAPI = loadstring(game:HttpGet("https://raw.githubusercontent.com/HunterAPI/EpikAPI/main/EpikAPI.lua"), "EpikAPI.lua")()
 local ME = game:GetService("Players").LocalPlayer
 
 EpikAPI.Prefix = ";"

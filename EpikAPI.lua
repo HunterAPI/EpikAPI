@@ -96,19 +96,16 @@ function EpikAPI.ExecuteCommand(msg)
 		RunCMDI(v)
 	end
 end
+local setprop = sethiddenproperty or sethiddenprop or sethidden or set_hidden_prop or set_hidden_property or function(x, i, v)
+	x[i] = v
+end
 function EpikAPI.Instance(a1, a2, a3)
-	if not a1 or type(a1) ~= "string" then
-		return warn("Invalid arguments for EpikAPI.Instance")
-	end
-	if a2 and type(a2) == "table" then
-		a3 = a2
-		a2 = nil
-	end
+	assert(type(a1) == "string" and (type(a2) == "nil" or type(a2) == "table" or typeof(a2) == "Instance" or (typeof(a2) == "Instance" and type(a3) == "table")), "Invalid arguments to 'EpikAPI.Instance' (expected (string, Instance, table) or (string, table) or (string, Instance) got (" .. typeof(a1) .. ", " .. typeof(a2) .. ", " .. typeof(a3) .. "))")
 	local s, x = pcall(Instance.new, a1)
 	if not s or not x or typeof(x) ~= "Instance" then
 		return warn(debug.traceback("Failed to create \"" .. a1 .. "\"", 2))
 	end
-	local IsGui, Center = x.IsA(x, "GuiBase"), nil
+	local IsGui, Center = x:IsA("GuiBase"), nil
 	if IsGui then
 		pcall(syn.protect_gui, x)
 	end
@@ -116,7 +113,9 @@ function EpikAPI.Instance(a1, a2, a3)
 		Center, a2 = IsGui and a3.Center, a3.Parent or a2
 		a3.Parent, a3.Center = nil, nil
 		for i, v in pairs(a3) do
-			x[i] = v
+			xpcall(setprop, function(msg)
+				return warn((string.gsub(debug.traceback(msg, 4), "[\n\r]+", "\n    ")))
+			end, x, i, v)
 		end
 	end
 	if Center and IsGui then

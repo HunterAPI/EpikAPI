@@ -1,31 +1,41 @@
-# EpikAPI || 485856#1337 (810658528212549702)
+# **EpikAPI** By, 485856#1337 (810658528212549702)
+
+If you have questions/bug reports/suggestions, please contact me on Discord.
+
 How to use:
 ```lua
-local EpikAPI = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/HunterAPI/EpikAPI/main/EpikAPI.lua"), "EpikAPI")()
+local EpikAPI = loadstring(game:HttpGet("https://raw.githubusercontent.com/HunterAPI/EpikAPI/main/EpikAPI.lua"), "EpikAPI.lua")() -- load it up
 
 EpikAPI.Prefix = ";" -- prefix
 
-table.foreach(EpikAPI.Commands, print) -- EpikAPI.Commands contains all commands and their aliases as commands in a table
+ -- EpikAPI.Commands contains all commands and their aliases as commands in a table
+for CommandName in pairs(EpikAPI.Commands) do
+	print(CommandName)
+end
 
-EpikAPI.Instance("Part", workspace, {
+-- Creating an Instance, for GUIs you're allowed to add 'Center = true' inside the table, it'll position the GUI in the very center, it'll set it at the very end so it'll account for the size
+local Part = EpikAPI.Instance("Part", workspace, {
     Anchored = true,
     Massless = true
 })
+
+table.foreach(getproperties(Part), print) -- example to show it returns the part (getproperties might not be supported for your exploit)
 
 EpikAPI.GetRoot(character) -- get's the root part or torso or head or basepart of 'character' if u don't put any arugments in, it'll default to LocalPlayer's character
 
 EpikAPI.FindPlayer("me,friends") -- keys words: me, all, others, friends, nonfriends, team, nonteam, random, furthest, closest
 -- You can also do "keyword,name,friends" to get them all
 
-EpikAPI.RegisterCommand("print", {"prnt"}, function(...) -- ... is the arguments
-    -- here you use the arguments
-    print(...)
+EpikAPI.RegisterCommand("print", {"prnt"}, function(args, ...) -- [args, ...] are the arguments
+    -- Inside of the function (callback) you put what you want the command to do
+    print(args, ...)
 end)
 
 EpikAPI.ExecuteCommand(";fly") -- You feed a string in for it to parse
 -- You can also do ";fly\another_command\another_command"
 -- When calling EpikAPI.ExecuteCommand, you don't need to pass the prefix, if you do it'll ignore it
 ```
+
 
 Basic example:
 ```lua

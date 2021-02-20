@@ -1,8 +1,8 @@
-# **EpikAPI** By, 485856#1337 (810658528212549702)
+# EpikAPI, 485856#1337 (810658528212549702)
 
-If you have questions/bug reports/suggestions, please contact me on Discord.
+If you have **questions/bug reports/suggestions** please contact me on Discord.
 
-How to use:
+**How to Use:**
 ```lua
 local EpikAPI = loadstring(game:HttpGet("https://raw.githubusercontent.com/HunterAPI/EpikAPI/main/EpikAPI.lua"), "EpikAPI.lua")() -- load it up
 
@@ -37,7 +37,7 @@ EpikAPI.ExecuteCommand(";fly") -- You feed a string in for it to parse
 ```
 
 
-Basic example:
+**Basic Example:**
 ```lua
 local EpikAPI = loadstring(game:HttpGet("https://raw.githubusercontent.com/HunterAPI/EpikAPI/main/EpikAPI.lua"), "EpikAPI.lua")()
 local ME = game:GetService("Players").LocalPlayer

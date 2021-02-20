@@ -42,7 +42,7 @@ EpikAPI.RegisterCommand("to", {"goto"}, function(plr)
     for _, v in ipairs(EpikAPI.FindPlayer(plr)) do
         v = v.Character and EpikAPI.GetRoot(v.Character)
         if v then
-            Char.MoveTo(Char, v.Position)
+            Char:MoveTo(v.Position)
         end
     end
 end)

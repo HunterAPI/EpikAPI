@@ -4,7 +4,7 @@ If you have **questions/bug reports/suggestions** please contact me on Discord.
 
 **How to Use:**
 ```lua
-local EpikAPI = loadstring(game:HttpGet("https://raw.githubusercontent.com/HunterAPI/EpikAPI/main/EpikAPI.lua"), "EpikAPI.lua")() -- load it up
+local EpikAPI = loadstring(game:HttpGet("https://raw.githubusercontent.com/HunterAPI/EpikAPI/main/EpikAPI.lua"), "EpikAPI.lua")() -- loads it up
 
 EpikAPI.Prefix = ";" -- prefix
 
@@ -21,21 +21,23 @@ local Part = EpikAPI.Instance("Part", workspace, {
 
 table.foreach(getproperties(Part), print) -- example to show it returns the part (getproperties might not be supported for your exploit)
 
-EpikAPI.GetRoot(character) -- get's the root part or torso or head or basepart of 'character' if u don't put any arugments in, it'll default to LocalPlayer's character
+-- Returns the character's RootPart or Torso or Head or a BasePart Instance. If no arguments are passed, it'll defaul to the LocalPlayer's Character
+EpikAPI.GetRoot(character)
 
-EpikAPI.FindPlayer("me,friends") -- keys words: me, all, others, friends, nonfriends, team, nonteam, random, furthest, closest
--- You can also do "keyword,name,friends" to get them all
+-- Returns a table of all the found players
+-- Key words: me, all, others, friends, nonfriends, team, nonteam, random, furthest, closest
+-- You can combine keywords like this "me,friends,johndoe,janedoe"
+EpikAPI.FindPlayer("me,friends")
 
 EpikAPI.RegisterCommand("print", {"prnt"}, function(args, ...) -- [args, ...] are the arguments
     -- Inside of the function (callback) you put what you want the command to do
     print(args, ...)
 end)
 
-EpikAPI.ExecuteCommand(";fly") -- You feed a string in for it to parse
--- You can also do ";fly\another_command\another_command"
--- When calling EpikAPI.ExecuteCommand, you don't need to pass the prefix, if you do it'll ignore it
+-- You don't need to pass the prefix; if you do put it, it'll ignore it (the first one only)
+-- To execute multiple commands you can seperate them with "\", example: ";fly\to johndoe\"
+EpikAPI.ExecuteCommand("fly")
 ```
-
 
 **Basic Example:**
 ```lua

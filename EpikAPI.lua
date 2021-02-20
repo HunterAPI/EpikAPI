@@ -224,5 +224,5 @@ function EpikAPI.FindPlayer(plr)
 	end
 	return z
 end
-print("Hunter was here ;)\nDiscord: 485856#0001 (720793503428509758)")
+print("Hunter was here ;)\nDiscord: 485856#1337 (810658528212549702)")
 return EpikAPI

@@ -72,19 +72,6 @@ local function RunCMDI(str)
 	if type(Command) ~= "function" then
 		return warn("Invalid Command:", cmd)
 	end
-	for i, v in ipairs(args) do
-		local n = tonumber(v)
-		if n then
-			v = n
-		elseif v == "nil" then
-			v = nil
-		elseif v == "false" then
-			v = false
-		elseif v == "true" then
-			v = true
-		end
-		args[i] = v
-	end
 	return coroutine.wrap(function()
 		return xpcall(Command, function(msg)
 			return warn((string.gsub(debug.traceback(msg), "[\n\r]+", "\n    ")))

@@ -2,21 +2,21 @@ local Players = game:GetService("Players")
 local ME = Players.LocalPlayer
 local EpikAPI = {
 	Commands = {},
+	CommandsList = {},
 	Prefix = "'"
 }
 function EpikAPI.RegisterCommand(name, alias, callback)
 	if type(alias) == "function" then
 		alias, callback = callback, alias
 	end
-	assert(type(name) == "string", "bad argument #1 to 'EpikAPI.RegisterCommand' (string expected got " .. tostring((type(name) == "nil" and "no value") or typeof(name)) .. ") [Cmd:" .. name .. "]")
+	assert(type(name) == "string", "bad argument #1 to 'EpikAPI.RegisterCommand' (string expected got " .. typeof(name) .. ") [Cmd:" .. name .. "]")
 	assert(type(alias) == "table" or type(alias) == "nil", "bad argument #2 to 'EpikAPI.RegisterCommand' (table expected got " .. typeof(args) .. ") [Cmd:" .. name .. "]")
-	assert(type(callback) == "function", "bad argument #3 to 'EpikAPI.RegisterCommand' (function expected got " .. tostring((type(callback) == "nil" and "no value") or typeof(callback)) .. ") [Cmd:" .. name .. "]")
-	if type(alias) ~= "table" then
-		alias = {alias}
-	end
-	for _, v in ipairs({name, unpack(alias or {})}) do
+	assert(type(callback) == "function", "bad argument #3 to 'EpikAPI.RegisterCommand' (function expected got " .. typeof(callback) .. ") [Cmd:" .. name .. "]")
+	name = {name, unpack(type(alias) ~= "table" and {alias} or alias or {})}
+	for _, v in ipairs(name) do
 		EpikAPI.Commands[v] = callback
 	end
+	return table.insert(EpikAPI.CommandsList, table.concat(name, " / "))
 end
 local function RunCMDI(str)
 	str = tostring(str)
@@ -30,8 +30,7 @@ local function RunCMDI(str)
 		end
 	end
 	str = string.match(str, "^%s*(.-)%s*$") .. " "
-	local t = time()
-	local escape = false
+	local escape, t = false, time()
 	while #str > 0 and time() - t < 3 do
 		local s, e = string.find(str, " ", nil, true)
 		local d, r = string.find(str, "\91\91", nil, true)
@@ -211,5 +210,4 @@ function EpikAPI.FindPlayer(plr)
 	end
 	return z
 end
-print("Hunter was here ;)\nDiscord: 485856#1337 (810658528212549702)")
-return EpikAPI
+return print("Hunter was here ;)\nDiscord: 485856#1337 (810658528212549702)") and EpikAPI or EpikAPI, "Hunter", "was", "here"

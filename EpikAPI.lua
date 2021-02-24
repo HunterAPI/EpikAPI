@@ -87,6 +87,10 @@ local setprop = sethiddenproperty or sethiddenprop or sethidden or set_hidden_pr
 end
 function EpikAPI.Instance(a1, a2, a3)
 	assert(type(a1) == "string" and (type(a2) == "nil" or type(a2) == "table" or typeof(a2) == "Instance" or (typeof(a2) == "Instance" and type(a3) == "table")), "Invalid arguments to 'EpikAPI.Instance' (expected (string, Instance, table) or (string, table) or (string, Instance) got (" .. typeof(a1) .. ", " .. typeof(a2) .. ", " .. typeof(a3) .. "))")
+	if type(a2) == "table" then
+		a3 = a2
+		a2 = nil
+	end
 	local s, x = pcall(Instance.new, a1)
 	if not s or not x or typeof(x) ~= "Instance" then
 		return warn(debug.traceback("Failed to create \"" .. a1 .. "\"", 2))

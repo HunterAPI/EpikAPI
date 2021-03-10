@@ -9,9 +9,9 @@ function EpikAPI.RegisterCommand(name, alias, callback)
 	if type(alias) == "function" then
 		alias, callback = callback, alias
 	end
-	assert(type(name) == "string", "bad argument #1 to 'EpikAPI.RegisterCommand' (string expected got " .. typeof(name) .. ") [Cmd:" .. name .. "]")
-	assert(type(alias) == "table" or type(alias) == "nil", "bad argument #2 to 'EpikAPI.RegisterCommand' (table expected got " .. typeof(args) .. ") [Cmd:" .. name .. "]")
-	assert(type(callback) == "function", "bad argument #3 to 'EpikAPI.RegisterCommand' (function expected got " .. typeof(callback) .. ") [Cmd:" .. name .. "]")
+	assert(type(name) == "string", "bad argument #1 to 'RegisterCommand' (string expected got " .. typeof(name) .. ") [Cmd:" .. name .. "]")
+	assert(type(alias) == "table" or type(alias) == "nil", "bad argument #2 to 'RegisterCommand' (table expected got " .. typeof(args) .. ") [Cmd:" .. name .. "]")
+	assert(type(callback) == "function", "bad argument #3 to 'RegisterCommand' (function expected got " .. typeof(callback) .. ") [Cmd:" .. name .. "]")
 	name = {name, unpack(type(alias) ~= "table" and {alias} or alias or {})}
 	for _, v in ipairs(name) do
 		EpikAPI.Commands[v] = callback
@@ -200,6 +200,15 @@ FindFunctions.FromName = function(x, e)
 		end
 	end
 	return z
+end
+function EPikAPI.GetPlayerFromInstance(obj)
+	assert(obj and typeof(obj) == "Instance", "Invalid argument to 'GetPlayerFromInstance' (expected Instance got " .. typeof(obj) .. ")")
+	for _, v in ipairs(Players:GetPlayers()) do
+		if v.Character and obj:IsDescendantOf(v.Character) then
+			return v
+		end
+	end
+	return nil
 end
 function EpikAPI.FindPlayer(plr)
 	local z, x = {}, Players:GetPlayers()

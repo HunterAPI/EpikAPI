@@ -201,7 +201,7 @@ FindFunctions.FromName = function(x, e)
 	end
 	return z
 end
-function EPikAPI.GetPlayerFromInstance(obj)
+function EpikAPI.GetPlayerFromInstance(obj)
 	assert(obj and typeof(obj) == "Instance", "Invalid argument to 'GetPlayerFromInstance' (expected Instance got " .. typeof(obj) .. ")")
 	for _, v in ipairs(Players:GetPlayers()) do
 		if v.Character and obj:IsDescendantOf(v.Character) then

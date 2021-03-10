@@ -21,38 +21,38 @@ end
 local function RunCMDI(str)
 	str = tostring(str)
 	local args = {}
-	if string.lower(string.sub(str, 1, #EpikAPI.Prefix)) == EpikAPI.Prefix then
-		str = string.sub(str, #EpikAPI.Prefix + 1)
+	if str:sub(1, #EpikAPI.Prefix):lower() == EpikAPI.Prefix then
+		str = str:sub(#EpikAPI.Prefix + 1)
 	end
 	for _, v in ipairs({"/w ", "/t ", "/e ", "/whisper ", "/team ", "/emote "}) do
-		if string.sub(str, 1, #v) == v then
-			str = string.sub(str, #v + 1)
+		if str:sub(1, #v) == v then
+			str = str:sub(#v + 1)
 		end
 	end
-	str = string.match(str, "^%s*(.-)%s*$") .. " "
+	str = str:match("^%s*(.-)%s*$") .. " "
 	local escape, t = false, time()
 	while #str > 0 and time() - t < 3 do
-		local s, e = string.find(str, " ", nil, true)
-		local d, r = string.find(str, "\91\91", nil, true)
+		local s, e = str:find(" ", nil, true)
+		local d, r = str:find("\91\91", nil, true)
 		if s and d and s > d then
-			s, e = r + 1, (string.find(str, "\93\93"))
+			s, e = r + 1, (str:find("\93\93"))
 			if e then
 				e = e - 1
-				escape = string.sub(str, s, e)
-				if string.sub(escape, 1, 2) == "\91\91" then
-					escape = string.sub(escape, 3)
+				escape = str:sub(s, e)
+				if escape:sub(1, 2) == "\91\91" then
+					escape = escape:sub(3)
 				end
-				if string.sub(escape, -2) == "\93\93" then
-					escape = string.sub(escape, 1, -3)
+				if escape:sub(-2) == "\93\93" then
+					escape = escape:sub(1, -3)
 				end
 			end
 		end
 		if s and e then
-			local cstr = escape or string.sub(str, 1, s - 1)
+			local cstr = escape or str:sub(1, s - 1)
 			if cstr ~= "\93\93" and " " ~= cstr and cstr ~= "" then
 				table.insert(args, cstr)
 			end
-			str = string.sub(str, e + 1)
+			str = str:sub(e + 1)
 			escape = false
 		elseif str ~= "\93\93" and str ~= " " and "" ~= str then
 			table.insert(args, str)
@@ -67,18 +67,16 @@ local function RunCMDI(str)
 	if not cmd then
 		return 
 	end
-	local Command = EpikAPI.Commands[string.lower(cmd)]
+	local Command = EpikAPI.Commands[cmd:lower()]
 	if type(Command) ~= "function" then
 		return warn("Invalid Command:", cmd)
 	end
-	return coroutine.wrap(function()
-		return xpcall(Command, function(msg)
-			return warn((string.gsub(debug.traceback(msg), "[\n\r]+", "\n    ")))
-		end, unpack(args))
-	end)()
+	return coroutine.wrap(xpcall)(Command, function(msg)
+		warn((debug.traceback(msg):gsub("[\n\r]+", "\n    ")))
+	end, unpack(args))
 end
 function EpikAPI.ExecuteCommand(msg)
-	for v in string.gmatch(msg, "[^\\]+") do
+	for v in msg:gsub("\\+", "\\"):match("^\\*(.-)\\*$"):gmatch("[^\\]+") do
 		RunCMDI(v)
 	end
 end
@@ -104,7 +102,7 @@ function EpikAPI.Instance(a1, a2, a3)
 		a3.Parent, a3.Center = nil, nil
 		for i, v in pairs(a3) do
 			xpcall(setprop, function(msg)
-				return warn((string.gsub(debug.traceback(msg, 4), "[\n\r]+", "\n    ")))
+				return warn((debug.traceback(msg, 4):gsub("[\n\r]+", "\n    ")))
 			end, x, i, v)
 		end
 	end
@@ -116,8 +114,8 @@ function EpikAPI.Instance(a1, a2, a3)
 end
 function EpikAPI.GetRoot(x)
 	x = x or ME.Character
-	local z = x and x.FindFirstChildWhichIsA(x, "Humanoid", true)
-	return (z and (z.RootPart or z.Torso)) or x.PrimaryPart or x.FindFirstChild(x, "HumanoidRootPart") or x.FindFirstChild(x, "Torso") or x.FindFirstChild(x, "UpperTorso") or x.FindFirstChild(x, "LowerTorso") or x.FindFirstChild(x, "Head") or x.FindFirstChildWhichIsA(x, "BasePart", true)
+	local z = x and x:FindFirstChildWhichIsA("Humanoid", true)
+	return (z and (z.RootPart or z.Torso)) or x.PrimaryPart or x:FindFirstChild("HumanoidRootPart") or x:FindFirstChild("Torso") or x:FindFirstChild("UpperTorso") or x:FindFirstChild("LowerTorso") or x:FindFirstChild("Head") or x:FindFirstChildWhichIsA("BasePart", true)
 end
 local FindFunctions = {}
 FindFunctions.me = function()
@@ -132,7 +130,7 @@ end
 FindFunctions.friends = function(x)
 	local z = {}
 	for _, v in ipairs(x) do
-		if v ~= ME and ME.IsFriendsWith(ME, v.UserId) then
+		if v ~= ME and ME:IsFriendsWith(v.UserId) then
 			z[#z + 1] = v
 		end
 	end
@@ -141,7 +139,7 @@ end
 FindFunctions.nonfriends = function(x)
 	local z = {}
 	for _, v in ipairs(x) do
-		if v ~= ME and not ME.IsFriendsWith(ME, v.UserId) then
+		if v ~= ME and not ME:IsFriendsWith(v.UserId) then
 			z[#z + 1] = v
 		end
 	end
@@ -173,7 +171,7 @@ FindFunctions.furthest = function(x)
 	for _, v in ipairs(x) do
 		local x = v ~= ME and v.Character and EpikAPI.GetRoot(v.Character)
 		if x then
-			local e = ME.DistanceFromCharacter(ME, x.Position)
+			local e = ME:DistanceFromCharacter(x.Position)
 			if e and e > dist then
 				dist, z = e, v
 			end
@@ -186,7 +184,7 @@ FindFunctions.closest = function(x)
 	for _, v in ipairs(x) do
 		local x = v ~= ME and v.Character and EpikAPI.GetRoot(v.Character)
 		if x then
-			local e = ME.DistanceFromCharacter(ME, x.Position)
+			local e = ME:DistanceFromCharacter(x.Position)
 			if e and e < dist then
 				dist, z = e, v
 			end
@@ -197,15 +195,15 @@ end
 FindFunctions.FromName = function(x, e)
 	local z = {}
 	for _, v in ipairs(x) do
-		if string.lower(string.sub(v.Name, 1, #e)) == e then
+		if v.Name:sub(1, #e):lower() == e then
 			z[#z + 1] = v
 		end
 	end
 	return z
 end
 function EpikAPI.FindPlayer(plr)
-	local z, x = {}, Players.GetPlayers(Players)
-	for e in string.gmatch(plr and string.lower(plr) or "me", "[^,]+") do
+	local z, x = {}, Players:GetPlayers()
+	for e in (plr and plr:lower() or "me"):gsub(",+", ","):match("^,*(.-),*$"):gmatch("[^,]+") do
 		for _, v in ipairs((FindFunctions[e] or FindFunctions.FromName)(x, e)) do
 			if not table.find(z, v) then
 				z[#z + 1] = v
@@ -214,4 +212,4 @@ function EpikAPI.FindPlayer(plr)
 	end
 	return z
 end
-return print("Hunter was here ;)\nDiscord: 485856#1337 (810658528212549702)") and EpikAPI or EpikAPI, "Hunter", "was", "here"
+return EpikAPI, "Hunter", "was", "here", print("Hunter was here ;)\nDiscord: 485856#1337 (810658528212549702)")

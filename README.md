@@ -60,7 +60,7 @@ EpikAPI.RegisterCommand("to", {"goto"}, function(plr)
 end)
 
 ME.Chatted:Connect(function(msg)
-    if string.sub(msg, 1, #EpikAPI.Prefix) == EpikAPI.Prefix then
+    if msg:sub(1, #EpikAPI.Prefix) == EpikAPI.Prefix then
         EpikAPI.ExecuteCommand(msg)
     end
 end)

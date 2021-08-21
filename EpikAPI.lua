@@ -33,28 +33,28 @@ local function RunCMDI(str)
 	local escape, t = false, time()
 	while #str > 0 and time() - t < 3 do
 		local s, e = str:find(" ", nil, true)
-		local d, r = str:find("\91\91", nil, true)
+		local d, r = str:find("[[", nil, true)
 		if s and d and s > d then
-			s, e = r + 1, (str:find("\93\93"))
+			s, e = r + 1, (str:find("]]"))
 			if e then
 				e = e - 1
 				escape = str:sub(s, e)
-				if escape:sub(1, 2) == "\91\91" then
+				if escape:sub(1, 2) == "[[" then
 					escape = escape:sub(3)
 				end
-				if escape:sub(-2) == "\93\93" then
+				if escape:sub(-2) == "]]" then
 					escape = escape:sub(1, -3)
 				end
 			end
 		end
 		if s and e then
 			local cstr = escape or str:sub(1, s - 1)
-			if cstr ~= "\93\93" and " " ~= cstr and cstr ~= "" then
+			if cstr ~= "]]" and " " ~= cstr and cstr ~= "" then
 				table.insert(args, cstr)
 			end
 			str = str:sub(e + 1)
 			escape = false
-		elseif str ~= "\93\93" and str ~= " " and "" ~= str then
+		elseif str ~= "]]" and str ~= " " and "" ~= str then
 			table.insert(args, str)
 			str = ""
 			break
@@ -65,7 +65,7 @@ local function RunCMDI(str)
 	end
 	local cmd = table.remove(args, 1)
 	if not cmd then
-		return 
+		return
 	end
 	local Command = EpikAPI.Commands[cmd:lower()]
 	if type(Command) ~= "function" then
@@ -201,6 +201,26 @@ FindFunctions.FromName = function(x, e)
 	end
 	return z
 end
+function EpikAPI.FindPlayer(plr)
+	local z, x = {}, Players:GetPlayers()
+	for e in (plr and plr:lower() or "me"):gsub(",+", ","):match("^,*(.-),*$"):gmatch("[^,]+") do
+		local r = e:match("^regex%((.-)%)$")
+		if r then
+			for _, v in ipairs(x) do
+				if v.Name:find(r) then
+					z[#z + 1] = v
+				end
+			end
+		else
+			for _, v in ipairs((FindFunctions[e] or FindFunctions.FromName)(x, e)) do
+				if not table.find(z, v) then
+					z[#z + 1] = v
+				end
+			end
+		end
+	end
+	return z
+end
 function EpikAPI.GetPlayerFromInstance(obj)
 	assert(obj and typeof(obj) == "Instance", "Invalid argument to 'GetPlayerFromInstance' (expected Instance got " .. typeof(obj) .. ")")
 	for _, v in ipairs(Players:GetPlayers()) do
@@ -209,17 +229,6 @@ function EpikAPI.GetPlayerFromInstance(obj)
 		end
 	end
 	return nil
-end
-function EpikAPI.FindPlayer(plr)
-	local z, x = {}, Players:GetPlayers()
-	for e in (plr and plr:lower() or "me"):gsub(",+", ","):match("^,*(.-),*$"):gmatch("[^,]+") do
-		for _, v in ipairs((FindFunctions[e] or FindFunctions.FromName)(x, e)) do
-			if not table.find(z, v) then
-				z[#z + 1] = v
-			end
-		end
-	end
-	return z
 end
 print("Hunter was here ;)\nDiscord: 534144#9996 (820077059095003147)")
 return EpikAPI, "Hunter", "was", "here"

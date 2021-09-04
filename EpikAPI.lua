@@ -266,5 +266,17 @@ function EpikAPI.LoadAssetWithScripts(Id, Parent)
 	end
 	return Asset
 end
-print("Hunter was here ;)\nDiscord: 534144#9996 (820077059095003147)")
-return EpikAPI
+local StarterGui = game:GetService("StarterGui")
+function EpikAPI.Notify(title, text, dur)
+	local t = (type(title) == "table" and title) or {}
+	if type(title) == "string" then
+		local a = (not text or type(text) == "number")
+		t = {
+			Title = a and "Epik API" or title,
+			Text = a and title or text,
+			Duration = a and tonumber(text) or tonumber(dur) or 5
+		}
+	end
+	StarterGui:SetCore("SendNotification", t)
+end
+return EpikAPI, print("Hunter was here ;)\nDiscord: 534144#9996 (820077059095003147)")

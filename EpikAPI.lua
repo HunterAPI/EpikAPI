@@ -5,6 +5,7 @@ local EpikAPI = {
 	CommandsList = {},
 	Prefix = "'"
 }
+local _ENV = _ENV or getfenv()
 function EpikAPI.RegisterCommand(name, alias, callback)
 	if type(alias) == "function" then
 		alias, callback = callback, alias
@@ -19,7 +20,7 @@ function EpikAPI.RegisterCommand(name, alias, callback)
 	return table.insert(EpikAPI.CommandsList, table.concat(name, " / "))
 end
 local function RunCMDI(str)
-	str = tostring(str)
+	str = tostring(str):match("^%s*(.-)%s*$")
 	local args = {}
 	if str:sub(1, #EpikAPI.Prefix):lower() == EpikAPI.Prefix then
 		str = str:sub(#EpikAPI.Prefix + 1)
@@ -76,7 +77,7 @@ local function RunCMDI(str)
 	end, unpack(args))
 end
 function EpikAPI.ExecuteCommand(msg)
-	for v in msg:gsub("\\+", "\\"):match("^\\*(.-)\\*$"):gmatch("[^\\]+") do
+	for v in msg:match("^%s*(.-)%s*$"):gsub("\\+", "\\"):match("^\\*(.-)\\*$"):gmatch("[^\\]+") do
 		RunCMDI(v)
 	end
 end
@@ -195,7 +196,7 @@ end
 FindFunctions.FromName = function(x, e)
 	local z = {}
 	for _, v in ipairs(x) do
-		if v.Name:sub(1, #e):lower() == e then
+		if v.Name:sub(1, #e):lower() == e or v.DisplayName:sub(1, #e):lower() == e and not table.find(z, v) then
 			z[#z + 1] = v
 		end
 	end
@@ -203,11 +204,12 @@ FindFunctions.FromName = function(x, e)
 end
 function EpikAPI.FindPlayer(plr)
 	local z, x = {}, Players:GetPlayers()
-	for e in (plr and plr:lower() or "me"):gsub(",+", ","):match("^,*(.-),*$"):gmatch("[^,]+") do
+	for e in (plr and plr:lower() or "me"):match("^%s*(.-)%s*$"):gsub(",+", ","):match("^,*(.-),*$"):gmatch("[^,]+") do
+		e = e:lower():match("^%s*(.-)%s*$")
 		local r = e:match("^regex%((.-)%)$")
 		if r then
 			for _, v in ipairs(x) do
-				if v.Name:find(r) then
+				if v.Name:find(r) and not table.find(z, v) then
 					z[#z + 1] = v
 				end
 			end
@@ -230,5 +232,37 @@ function EpikAPI.GetPlayerFromInstance(obj)
 	end
 	return nil
 end
+function EpikAPI.LoadAssetWithScripts(Id, Parent)
+	Id, Parent = tonumber(Id), typeof(Parent) == "Instance" and Parent or false
+	assert(Id, "Invalid argument to 'LoadAssetWithScripts' (expected number)")
+	local Loaded, Asset = pcall(game.GetObjects, game, "rbxassetid://" .. Id)
+	if not Loaded or (Loaded and (not Asset[1] or typeof(Asset[1]) ~= "Instance")) then
+		return warn(not Loaded and Asset or "Failed to load '" .. Id .. "'")
+	end
+	Asset = Asset[1]
+	if Asset:IsA("GuiBase") and syn and type(syn) == "table" and syn.protect_gui and type(syn.protect_gui) == "function" then
+		pcall(syn.protect_gui, Asset)
+	end
+	local Name = ""
+	for _ = 1, math.random(24, 33) do
+		Name = Name .. string.char(math.random(33, 126))
+	end
+	Asset.Name = Name
+	Asset.Parent = Parent or (get_hidden_ui and get_hidden_ui()) or (gethui and gethui()) or (get_hidden_gui and get_hidden_gui()) or game:GetService("CoreGui")
+	local function sandbox(v)
+		task.spawn(setfenv(loadstring(v.Source, "=" .. v:GetFullName()), setmetatable({script = v}, {
+			__index = _ENV
+		})))
+	end
+	if Asset:IsA("LuaSourceContainer") then
+		sandbox(v)
+	end
+	for _, v in ipairs(Asset:GetDescendants()) do
+		if v:IsA("LuaSourceContainer") then
+			sandbox(v)
+		end
+	end
+	return Asset
+end
 print("Hunter was here ;)\nDiscord: 534144#9996 (820077059095003147)")
-return EpikAPI, "Hunter", "was", "here"
+return EpikAPI

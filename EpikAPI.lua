@@ -250,7 +250,9 @@ function EpikAPI.LoadAssetWithScripts(Id, Parent)
 	Asset.Name = Name
 	Asset.Parent = Parent or (get_hidden_ui and get_hidden_ui()) or (gethui and gethui()) or (get_hidden_gui and get_hidden_gui()) or game:GetService("CoreGui")
 	local function sandbox(v)
-		task.spawn(setfenv(loadstring(v.Source, "=" .. v:GetFullName()), setmetatable({script = v}, {
+		task.spawn(setfenv(loadstring(v.Source, "=" .. v:GetFullName()), setmetatable({
+			script = v
+		}, {
 			__index = _ENV
 		})))
 	end

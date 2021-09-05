@@ -35,8 +35,30 @@ EpikAPI.RegisterCommand("print", {"prnt"}, function(args, ...) -- [args, ...] ar
 end)
 
 -- You don't need to pass the prefix; if you do put it, it'll ignore it (the first one only)
--- To execute multiple commands you can seperate them with "\", example: ";fly\to johndoe\"
+-- To execute multiple commands you can seperate them with "\", example: ";fly\to johndoe"
 EpikAPI.ExecuteCommand("fly")
+
+EpikAPI.GetPlayerFromInstance(ins) -- This basically checks if ins is a descendant of a player or the player's character
+
+EpikAPI.LoadAssetWithScripts(id, optional_parent) -- this loads an asset fromt he roblox library with all the scripts inside it executed (default parent is set to CoreGui)
+-- You can use this function to make a dex command like this
+local Dex = false
+EpikAPI.RegisterCommand("dex", {"explorer"}, function()
+	Dex = (Dex and Dex:Destroy() and nil or nil) or EpikAPI.LoadAssetWithScripts(3567096419)
+	return Dex
+end)
+
+-- EpikAPI.Notify it's just like StarterGui:SetCore("SendNotification", {Title = "Hello", Text = "Hi"})
+-- It can also just except a string argument (text field), 2 sring arguments (title field and then text field), and also a 2nd/3rd number argument for duration
+EpikAPI.Notify("text")
+EpikAPI.Notify("text", 10)
+EpikAPI.Notify("title", "text")
+EpikAPI.Notify("title", "text", 3)
+EpikAPI.Notify({
+	Title = "Test",
+	Text = "Test",
+	Button1 = "Test"
+})
 ```
 
 **Basic Example:**
@@ -55,6 +77,7 @@ EpikAPI.RegisterCommand("to", {"goto"}, function(plr)
         v = v.Character and EpikAPI.GetRoot(v.Character)
         if v then
             Char:MoveTo(v.Position)
+	    break
         end
     end
 end)

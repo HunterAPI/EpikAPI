@@ -69,22 +69,27 @@ local ME = game:GetService("Players").LocalPlayer
 EpikAPI.Prefix = ";"
 
 EpikAPI.RegisterCommand("to", {"goto"}, function(plr)
-    local Char = ME.Character
-    if not Char then
-        return warn("Missing LocalPlayer's Character")
-    end
-    for _, v in ipairs(EpikAPI.FindPlayer(plr)) do
-        v = v.Character and EpikAPI.GetRoot(v.Character)
-        if v then
-            Char:MoveTo(v.Position)
-	    break
-        end
-    end
+	local Char = ME.Character
+	if not Char then
+		return warn("Missing LocalPlayer's Character")
+	end
+	for _, v in ipairs(EpikAPI.FindPlayer(plr)) do
+		v = v.Character and EpikAPI.GetRoot(v.Character)
+		if v then
+			return Char:MoveTo(v.Position)
+		end
+	end
+	EpikAPI.Notify("Teleport", "No player found called \"" .. plr .. "\"!")
 end)
 
 ME.Chatted:Connect(function(msg)
-    if msg:sub(1, #EpikAPI.Prefix) == EpikAPI.Prefix then
-        EpikAPI.ExecuteCommand(msg)
-    end
+	for _, v in ipairs({"/w ", "/t ", "/e ", "/whisper ", "/team ", "/emote "}) do
+		if msg:sub(1, #v) == v then
+			msg = msg:sub(#v + 1)
+		end
+	end
+	if msg:sub(1, #EpikAPI.Prefix) == EpikAPI.Prefix then
+		EpikAPI.ExecuteCommand(msg)
+	end
 end)
 ```

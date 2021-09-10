@@ -10,71 +10,63 @@ function EpikAPI.RegisterCommand(name, alias, callback)
 	if type(alias) == "function" then
 		alias, callback = callback, alias
 	end
-	assert(type(name) == "string", "bad argument #1 to 'RegisterCommand' (string expected got " .. typeof(name) .. ") [Cmd:" .. name .. "]")
-	assert(type(alias) == "table" or type(alias) == "nil", "bad argument #2 to 'RegisterCommand' (table expected got " .. typeof(args) .. ") [Cmd:" .. name .. "]")
-	assert(type(callback) == "function", "bad argument #3 to 'RegisterCommand' (function expected got " .. typeof(callback) .. ") [Cmd:" .. name .. "]")
+	assert(type(name) == "string", "bad argument #1 to 'RegisterCommand' (string expected got " .. typeof(name) .. ")")
+	assert(type(alias) == "table" or type(alias) == "nil", "bad argument #2 to 'RegisterCommand' (table expected got " .. typeof(args) .. ")")
+	assert(type(callback) == "function", "bad argument #3 to 'RegisterCommand' (function expected got " .. typeof(callback) .. ")")
 	name = {name, unpack(type(alias) ~= "table" and {alias} or alias or {})}
 	for _, v in ipairs(name) do
 		EpikAPI.Commands[v] = callback
 	end
 	return table.insert(EpikAPI.CommandsList, table.concat(name, " / "))
 end
-local function RunCMDI(str)
-	str = tostring(str):match("^%s*(.-)%s*$")
-	local args = {}
-	if str:sub(1, #EpikAPI.Prefix):lower() == EpikAPI.Prefix then
-		str = str:sub(#EpikAPI.Prefix + 1)
+local function RunCMDI(a)
+	a = tostring(a):match("^%s*(.-)%s*$")
+	local d = {}
+	if a:sub(1, #EpikAPI.Prefix):lower() == EpikAPI.Prefix then
+		a = a:sub(#EpikAPI.Prefix + 1)
 	end
-	for _, v in ipairs({"/w ", "/t ", "/e ", "/whisper ", "/team ", "/emote "}) do
-		if str:sub(1, #v) == v then
-			str = str:sub(#v + 1)
-		end
-	end
-	str = str:match("^%s*(.-)%s*$") .. " "
-	local escape, t = false, time()
-	while #str > 0 and time() - t < 3 do
-		local s, e = str:find(" ", nil, true)
-		local d, r = str:find("[[", nil, true)
-		if s and d and s > d then
-			s, e = r + 1, (str:find("]]"))
-			if e then
-				e = e - 1
-				escape = str:sub(s, e)
-				if escape:sub(1, 2) == "[[" then
-					escape = escape:sub(3)
+	a = a:match("^%s*(.-)%s*$") .. " "
+	local c, b = os.clock(), false
+	while #a > 0 and (os.clock() - c) < 3 do
+		local g, h = a:find(" ", 1, true)
+		local i, j = a:find("[[", 1, true)
+		if g and i and g > i then
+			g, h = j + 1, (a:find("]]"))
+			if h then
+				h = h - 1
+				b = a:sub(g, h)
+				if b:sub(1, 2) == "[[" then
+					b = b:sub(3)
 				end
-				if escape:sub(-2) == "]]" then
-					escape = escape:sub(1, -3)
+				if b:sub(-2) == "]]" then
+					b = b:sub(1, -3)
 				end
 			end
 		end
-		if s and e then
-			local cstr = escape or str:sub(1, s - 1)
-			if cstr ~= "]]" and " " ~= cstr and cstr ~= "" then
-				table.insert(args, cstr)
+		if g and h then
+			local k = b or a:sub(1, g - 1)
+			if k ~= "]]" and " " ~= k and k ~= "" then
+				d[#d + 1] = k
 			end
-			str = str:sub(e + 1)
-			escape = false
-		elseif str ~= "]]" and str ~= " " and "" ~= str then
-			table.insert(args, str)
-			str = ""
+			a = a:sub(h + 1)
+			b = false
+		elseif a ~= "]]" and a ~= " " and "" ~= a then
+			d[#d + 1] = a
+			a = ""
 			break
 		else
-			str = ""
+			a = ""
 			break
 		end
 	end
-	local cmd = table.remove(args, 1)
-	if not cmd then
-		return
+	local e = table.remove(d, 1)
+	local f = e and EpikAPI.Commands[e and e:lower()]
+	if not f or type(f) ~= "function" then
+		return warn("Hunter's Admin; Invalid command:", e)
 	end
-	local Command = EpikAPI.Commands[cmd:lower()]
-	if type(Command) ~= "function" then
-		return warn("Invalid Command:", cmd)
-	end
-	return coroutine.wrap(xpcall)(Command, function(msg)
-		warn((debug.traceback(msg):gsub("[\n\r]+", "\n    ")))
-	end, unpack(args))
+	return task.spawn(xpcall, f, function(l)
+		warn((debug.traceback(l):gsub("[\n\r]+", "\n    ")))
+	end, unpack(d))
 end
 function EpikAPI.ExecuteCommand(msg)
 	for v in msg:match("^%s*(.-)%s*$"):gsub("\\+", "\\"):match("^\\*(.-)\\*$"):gmatch("[^\\]+") do
@@ -274,9 +266,9 @@ function EpikAPI.Notify(title, text, dur)
 		t = {
 			Title = a and "Epik API" or title,
 			Text = a and title or text,
-			Duration = a and tonumber(text) or tonumber(dur) or 5
+			Duration = a and tonumber(text or dur) or 5
 		}
 	end
 	StarterGui:SetCore("SendNotification", t)
 end
-return EpikAPI, print("Hunter was here ;)\nDiscord: 534144#9996 (820077059095003147)")
+return EpikAPI, print("Hunter was here ;) Discord: 534144#9996 (820077059095003147)")

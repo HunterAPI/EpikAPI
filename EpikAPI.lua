@@ -14,7 +14,7 @@ function EpikAPI.RegisterCommand(name, alias, callback)
 	assert(type(alias) == "table" or type(alias) == "nil", "bad argument #2 to 'RegisterCommand' (table expected got " .. typeof(args) .. ")")
 	assert(type(callback) == "function", "bad argument #3 to 'RegisterCommand' (function expected got " .. typeof(callback) .. ")")
 	name = {name, unpack(type(alias) ~= "table" and {alias} or alias or {})}
-	for _, v in ipairs(name) do
+	for _, v in next, name do
 		EpikAPI.Commands[v] = callback
 	end
 	return table.insert(EpikAPI.CommandsList, table.concat(name, " / "))
@@ -93,7 +93,7 @@ function EpikAPI.Instance(a1, a2, a3)
 	if a3 and type(a3) == "table" then
 		Center, a2 = IsGui and a3.Center, a3.Parent or a2
 		a3.Parent, a3.Center = nil, nil
-		for i, v in pairs(a3) do
+		for i, v in next, a3 do
 			xpcall(setprop, function(msg)
 				return warn((debug.traceback(msg, 4):gsub("[\n\r]+", "\n    ")))
 			end, x, i, v)
@@ -118,11 +118,11 @@ FindFunctions.all = function(x)
 	return x
 end
 FindFunctions.others = function(x)
-	return {select(2, unpack(x))}
+	return {unpack(x, 2)}
 end
 FindFunctions.friends = function(x)
 	local z = {}
-	for _, v in ipairs(x) do
+	for _, v in next, x do
 		if v ~= ME and ME:IsFriendsWith(v.UserId) then
 			z[#z + 1] = v
 		end
@@ -131,7 +131,7 @@ FindFunctions.friends = function(x)
 end
 FindFunctions.nonfriends = function(x)
 	local z = {}
-	for _, v in ipairs(x) do
+	for _, v in next, x do
 		if v ~= ME and not ME:IsFriendsWith(v.UserId) then
 			z[#z + 1] = v
 		end
@@ -140,7 +140,7 @@ FindFunctions.nonfriends = function(x)
 end
 FindFunctions.team = function(x)
 	local z = {}
-	for _, v in ipairs(x) do
+	for _, v in next, x do
 		if v ~= ME and v.Team == ME.Team then
 			z[#z + 1] = v
 		end
@@ -149,7 +149,7 @@ FindFunctions.team = function(x)
 end
 FindFunctions.nonteam = function(x)
 	local z = {}
-	for _, v in ipairs(x) do
+	for _, v in next, x do
 		if v ~= ME and v.Team ~= ME.Team then
 			z[#z + 1] = v
 		end
@@ -161,7 +161,7 @@ FindFunctions.random = function(x)
 end
 FindFunctions.furthest = function(x)
 	local dist, z = 0, false
-	for _, v in ipairs(x) do
+	for _, v in next, x do
 		local x = v ~= ME and v.Character and EpikAPI.GetRoot(v.Character)
 		if x then
 			local e = ME:DistanceFromCharacter(x.Position)
@@ -174,7 +174,7 @@ FindFunctions.furthest = function(x)
 end
 FindFunctions.closest = function(x)
 	local dist, z = math.huge, false
-	for _, v in ipairs(x) do
+	for _, v in next, x do
 		local x = v ~= ME and v.Character and EpikAPI.GetRoot(v.Character)
 		if x then
 			local e = ME:DistanceFromCharacter(x.Position)
@@ -187,7 +187,7 @@ FindFunctions.closest = function(x)
 end
 FindFunctions.FromName = function(x, e)
 	local z = {}
-	for _, v in ipairs(x) do
+	for _, v in next, x do
 		if v.Name:sub(1, #e):lower() == e or v.DisplayName:sub(1, #e):lower() == e and not table.find(z, v) then
 			z[#z + 1] = v
 		end
@@ -200,13 +200,13 @@ function EpikAPI.FindPlayer(plr)
 		e = e:lower():match("^%s*(.-)%s*$")
 		local r = e:match("^regex%((.-)%)$")
 		if r then
-			for _, v in ipairs(x) do
+			for _, v in next, x do
 				if v.Name:find(r) and not table.find(z, v) then
 					z[#z + 1] = v
 				end
 			end
 		else
-			for _, v in ipairs((FindFunctions[e] or FindFunctions.FromName)(x, e)) do
+			for _, v in next, (FindFunctions[e] or FindFunctions.FromName)(x, e) do
 				if not table.find(z, v) then
 					z[#z + 1] = v
 				end
@@ -217,7 +217,7 @@ function EpikAPI.FindPlayer(plr)
 end
 function EpikAPI.GetPlayerFromInstance(obj)
 	assert(obj and typeof(obj) == "Instance", "Invalid argument to 'GetPlayerFromInstance' (expected Instance got " .. typeof(obj) .. ")")
-	for _, v in ipairs(Players:GetPlayers()) do
+	for _, v in next, Players:GetPlayers() do
 		if v.Character and obj:IsDescendantOf(v.Character) then
 			return v
 		end
@@ -251,7 +251,7 @@ function EpikAPI.LoadAssetWithScripts(Id, Parent)
 	if Asset:IsA("LuaSourceContainer") then
 		sandbox(v)
 	end
-	for _, v in ipairs(Asset:GetDescendants()) do
+	for _, v in next, Asset:GetDescendants() do
 		if v:IsA("LuaSourceContainer") then
 			sandbox(v)
 		end
@@ -271,4 +271,4 @@ function EpikAPI.Notify(title, text, dur)
 	end
 	StarterGui:SetCore("SendNotification", t)
 end
-return EpikAPI, print("Hunter was here ;) Discord: 534144#9996 (820077059095003147)")
+return EpikAPI, print("Hunter was here ;) Discord: opp pack smoka#9668 (936389404371615764)")

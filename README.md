@@ -1,4 +1,4 @@
-# EpikAPI, 534144#9996 (820077059095003147)
+# EpikAPI, opp pack smoka#9668 (936389404371615764)
 
 If you have **questions/bug reports/suggestions** please contact me on Discord.
 
@@ -9,7 +9,7 @@ local EpikAPI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Hunte
 EpikAPI.Prefix = ";" -- prefix
 
  -- EpikAPI.Commands contains all commands and their aliases as commands in a table
-for CommandName in pairs(EpikAPI.Commands) do
+for CommandName in next, EpikAPI.Commands do
 	print(CommandName)
 end
 
@@ -73,7 +73,7 @@ EpikAPI.RegisterCommand("to", {"goto"}, function(plr)
 	if not Char then
 		return warn("Missing LocalPlayer's Character")
 	end
-	for _, v in ipairs(EpikAPI.FindPlayer(plr)) do
+	for _, v in next, EpikAPI.FindPlayer(plr) do
 		v = v.Character and EpikAPI.GetRoot(v.Character)
 		if v then
 			return Char:MoveTo(v.Position)
@@ -83,7 +83,7 @@ EpikAPI.RegisterCommand("to", {"goto"}, function(plr)
 end)
 
 ME.Chatted:Connect(function(msg)
-	for _, v in ipairs({"/w ", "/t ", "/e ", "/whisper ", "/team ", "/emote "}) do
+	for _, v in next, {"/w ", "/t ", "/e ", "/whisper ", "/team ", "/emote "} do
 		if msg:sub(1, #v) == v then
 			msg = msg:sub(#v + 1)
 		end

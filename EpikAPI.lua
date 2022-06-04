@@ -199,9 +199,17 @@ function EpikAPI.FindPlayer(plr)
 	for e in (plr and plr:lower() or "me"):match("^%s*(.-)%s*$"):gsub(",+", ","):match("^,*(.-),*$"):gmatch("[^,]+") do
 		e = e:lower():match("^%s*(.-)%s*$")
 		local r = e:match("^regex%((.-)%)$")
+		local frm1, frm2 = e:match("from(%d+)%-?(%d*)")
+		frm1, frm2 = tonumber(frm1), tonumber(frm2)
 		if r then
 			for _, v in next, x do
 				if v.Name:find(r) and not table.find(z, v) then
+					z[#z + 1] = v
+				end
+			end
+		elseif frm1 then
+			for _, v in next, {unpack(x, math.min(frm1, frm2), math.max(frm1, frm2))} do
+				if not table.find(z, v) then
 					z[#z + 1] = v
 				end
 			end

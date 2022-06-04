@@ -208,6 +208,7 @@ function EpikAPI.FindPlayer(plr)
 				end
 			end
 		elseif frm1 then
+			frm2 = frm2 or #x
 			for _, v in next, {unpack(x, math.min(frm1, frm2), math.max(frm1, frm2))} do
 				if not table.find(z, v) then
 					z[#z + 1] = v

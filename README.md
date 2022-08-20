@@ -22,8 +22,8 @@ end
 
 -- Creating an Instance, for GUIs you're allowed to add 'Center = true' inside the table, it'll position the GUI in the very center, it'll set it at the very end so it'll account for the size
 local Part = EpikAPI.Instance("Part", workspace, {
-    Anchored = true,
-    Massless = true
+	Anchored = true,
+	Massless = true
 })
 
 table.foreach(getproperties(Part), print) -- example to show it returns the part (getproperties might not be supported for your exploit)
@@ -37,8 +37,8 @@ EpikAPI.GetRoot(character)
 EpikAPI.FindPlayer("me,friends")
 
 EpikAPI.RegisterCommand("print", {"prnt"}, function(args, ...) -- [args, ...] are the arguments
-    -- Inside of the function (callback) you put what you want the command to do
-    print(args, ...)
+	-- Inside of the function (callback) you put what you want the command to do
+	print(args, ...)
 end)
 
 -- You don't need to pass the prefix; if you do put it, it'll ignore it (the first one only)

@@ -1,11 +1,27 @@
-local Players = game:GetService("Players")
-local ME = Players.LocalPlayer
 local EpikAPI = {
 	Commands = {},
 	CommandsList = {},
 	Prefix = "'"
 }
 local _ENV = _ENV or getfenv()
+local cloneref = cloneref or function(...) return ... end
+local servproviders, getserv = {game, settings(), UserSettings()}, game.GetService
+local GS = setmetatable({}, {
+	__index = function(self, i)
+		for _, v in next, servproviders do
+			local worked, serv = pcall(getserv, v, i)
+			if worked and serv then
+				serv = cloneref(serv)
+				self[i] = serv
+				return serv
+			end
+		end
+		return nil
+	end
+})
+EpikAPI.GS = GS
+local Players = EpikAPI.GS.Players
+local ME = Players.LocalPlayer
 function EpikAPI.RegisterCommand(name, alias, callback)
 	if type(alias) == "function" then
 		alias, callback = callback, alias
@@ -227,14 +243,22 @@ end
 function EpikAPI.GetPlayerFromInstance(obj)
 	assert(obj and typeof(obj) == "Instance", "Invalid argument to 'GetPlayerFromInstance' (expected Instance got " .. typeof(obj) .. ")")
 	for _, v in next, Players:GetPlayers() do
-		if v.Character and obj:IsDescendantOf(v.Character) then
+		if v.Character and v.Character == obj and obj:IsDescendantOf(v.Character) then
 			return v
 		end
 	end
 	return nil
 end
+local sbIndex = (getgenv and getgenv()) or _ENV
+local function sandbox(v)
+	task.spawn(setfenv(loadstring(v.Source, "=" .. v:GetFullName()), setmetatable({
+		script = v
+	}, {
+		__index = sbIndex
+	})))
+end
 function EpikAPI.LoadAssetWithScripts(Id, Parent)
-	Id, Parent = tonumber(Id), typeof(Parent) == "Instance" and Parent or false
+	Id, Parent = tonumber(Id), typeof(Parent) == "Instance" and Parent or nil
 	assert(Id, "Invalid argument to 'LoadAssetWithScripts' (expected number)")
 	local Loaded, Asset = pcall(game.GetObjects, game, "rbxassetid://" .. Id)
 	if not Loaded or (Loaded and (not Asset[1] or typeof(Asset[1]) ~= "Instance")) then
@@ -249,25 +273,17 @@ function EpikAPI.LoadAssetWithScripts(Id, Parent)
 		Name = Name .. string.char(math.random(33, 126))
 	end
 	Asset.Name = Name
-	Asset.Parent = Parent or (get_hidden_ui and get_hidden_ui()) or (gethui and gethui()) or (get_hidden_gui and get_hidden_gui()) or game:GetService("CoreGui")
-	local function sandbox(v)
-		task.spawn(setfenv(loadstring(v.Source, "=" .. v:GetFullName()), setmetatable({
-			script = v
-		}, {
-			__index = _ENV
-		})))
-	end
-	if Asset:IsA("LuaSourceContainer") then
+	Asset.Parent = Parent or (get_hidden_ui and get_hidden_ui()) or (gethui and gethui()) or (get_hidden_gui and get_hidden_gui()) or GS.CoreGui
+	if Asset:IsA("BaseScript") then
 		sandbox(v)
 	end
 	for _, v in next, Asset:GetDescendants() do
-		if v:IsA("LuaSourceContainer") then
+		if v:IsA("BaseScript") then
 			sandbox(v)
 		end
 	end
 	return Asset
 end
-local StarterGui = game:GetService("StarterGui")
 function EpikAPI.Notify(title, text, dur)
 	local t = (type(title) == "table" and title) or {}
 	if type(title) == "string" then
@@ -278,6 +294,6 @@ function EpikAPI.Notify(title, text, dur)
 			Duration = a and tonumber(text or dur) or 5
 		}
 	end
-	StarterGui:SetCore("SendNotification", t)
+	GS.StarterGui:SetCore("SendNotification", t)
 end
 return EpikAPI, print("Hunter was here ;) Discord: EOS#0791 (ID: 992607884703711283)")

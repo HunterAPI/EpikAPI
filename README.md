@@ -8,9 +8,16 @@ local EpikAPI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Hunte
 
 EpikAPI.Prefix = ";" -- prefix
 
- -- EpikAPI.Commands contains all commands and their aliases as commands in a table
+-- EpikAPI.Commands contains all commands and their aliases as commands in a table
 for CommandName in next, EpikAPI.Commands do
 	print(CommandName)
+end
+
+-- EpikAPI.GS table that gets any Roblox 'Service' indexed, and caches it
+print(EpikAPI.GS.Players:GetPlayers())
+EpikAPI.GS.RunService:Set3DRenderingEnabled(false)
+for _, v in next, EpikAPI.GS.ReplicatedStorage:GetChildren() do
+	print(v.Name, v.ClassName)
 end
 
 -- Creating an Instance, for GUIs you're allowed to add 'Center = true' inside the table, it'll position the GUI in the very center, it'll set it at the very end so it'll account for the size
@@ -64,7 +71,7 @@ EpikAPI.Notify({
 **Basic Example:**
 ```lua
 local EpikAPI = loadstring(game:HttpGet("https://raw.githubusercontent.com/HunterAPI/EpikAPI/main/EpikAPI.lua"), "EpikAPI.lua")()
-local ME = game:GetService("Players").LocalPlayer
+local ME = EpikAPI.GS.Players.LocalPlayer
 
 EpikAPI.Prefix = ";"
 

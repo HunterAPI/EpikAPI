@@ -280,4 +280,4 @@ function EpikAPI.Notify(title, text, dur)
 	end
 	StarterGui:SetCore("SendNotification", t)
 end
-return EpikAPI, print("Hunter was here ;) Discord: opp pack smoka#9668 (936389404371615764)")
+return EpikAPI, print("Hunter was here ;) Discord: EOS#0791 (ID: 992607884703711283)")

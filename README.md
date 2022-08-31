@@ -75,18 +75,44 @@ local ME = EpikAPI.GS.Players.LocalPlayer
 
 EpikAPI.Prefix = ";"
 
+local function RemoveVelocity()
+	if not ME.Character then
+		return
+	end
+	for _, v in next, ME.Character:GetDescendants() do
+		if v:IsA("BasePart") then
+			v.Velocity, v.RotVelocity = Vector3.zero, Vector3.zero
+		end
+	end
+end
+
 EpikAPI.RegisterCommand("to", {"goto"}, function(plr)
 	local Char = ME.Character
 	if not Char then
-		return warn("Missing LocalPlayer's Character")
+		return EpikAPI.Notify("Missing LocalPlayer's Character")
 	end
 	for _, v in next, EpikAPI.FindPlayer(plr) do
-		v = v.Character and EpikAPI.GetRoot(v.Character)
-		if v then
-			return Char:MoveTo(v.Position)
+		if v.Character then
+			return Char:PivotTo(v.Character:GetPivot()), RemoveVelocity()
 		end
 	end
 	EpikAPI.Notify("Teleport", "No player found called \"" .. plr .. "\"!")
+end)
+EpikAPI.RegisterCommand("rendering", function(set)
+	if set == "on" or set == "true" then
+		set = true
+	elseif set == "off" or set == "false" then
+		set = false
+	end
+	EpikAPI.GS.RunService:Set3dRenderingEnabled(set)
+	EpikAPI.Notify("3D Rendering", (set and "Enabled" or "Disabled") .. " 3D Rendering!")
+end)
+
+EpikAPI.RegisterCommand("cmds", {"printcmds"}, function()
+	for _, v in next, EpikAPI.CommandsList do
+		print(v)
+	end
+	EpikAPI.Notify("Commands", "Press F9 to open the console to see the commands")
 end)
 
 ME.Chatted:Connect(function(msg)

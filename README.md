@@ -1,4 +1,4 @@
-# EpikAPI, EOS#0791 (ID: 992607884703711283)
+# EpikAPI, EOS#3333 (ID: 992607884703711283)
 
 If you have **questions/bug reports/suggestions** please contact me on Discord.
 

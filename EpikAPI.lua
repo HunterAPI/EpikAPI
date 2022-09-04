@@ -243,7 +243,7 @@ end
 function EpikAPI.GetPlayerFromInstance(obj)
 	assert(obj and typeof(obj) == "Instance", "Invalid argument to 'GetPlayerFromInstance' (expected Instance got " .. typeof(obj) .. ")")
 	for _, v in next, Players:GetPlayers() do
-		if v.Character and v.Character == obj and obj:IsDescendantOf(v.Character) then
+		if v == obj or obj:IsDescendantOf(v) or v.Character == obj or obj:IsDescendantOf(v.Character) then
 			return v
 		end
 	end
@@ -265,7 +265,7 @@ function EpikAPI.LoadAssetWithScripts(Id, Parent)
 		return warn(not Loaded and Asset or "Failed to load '" .. Id .. "'")
 	end
 	Asset = Asset[1]
-	if Asset:IsA("GuiBase") and syn and type(syn) == "table" and syn.protect_gui and type(syn.protect_gui) == "function" then
+	if syn and type(syn) == "table" and syn.protect_gui and type(syn.protect_gui) == "function" then
 		pcall(syn.protect_gui, Asset)
 	end
 	local Name = ""
@@ -296,4 +296,4 @@ function EpikAPI.Notify(title, text, dur)
 	end
 	GS.StarterGui:SetCore("SendNotification", t)
 end
-return EpikAPI, print("Hunter was here ;) Discord: EOS#0791 (ID: 992607884703711283)")
+return EpikAPI, "EOS#3333 (ID: 992607884703711283)"

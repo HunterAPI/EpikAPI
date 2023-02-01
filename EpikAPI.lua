@@ -121,22 +121,25 @@ function EpikAPI.Instance(a1, a2, a3)
 	x.Parent = a2
 	return x
 end
+function EpikAPI.RegexSafe(s)
+	return (s:gsub("[%$%%%^%*%(%)%.%[%]%+%-%?]", "%%%1"))
+end
 function EpikAPI.GetRoot(x)
 	x = x or ME.Character
 	local z = x and x:FindFirstChildWhichIsA("Humanoid", true)
 	return (z and (z.RootPart or z.Torso)) or x.PrimaryPart or x:FindFirstChild("HumanoidRootPart") or x:FindFirstChild("Torso") or x:FindFirstChild("UpperTorso") or x:FindFirstChild("LowerTorso") or x:FindFirstChild("Head") or x:FindFirstChildWhichIsA("BasePart", true)
 end
 local FindFunctions = {}
-FindFunctions.me = function()
+function FindFunctions.me()
 	return {ME}
 end
-FindFunctions.all = function(x)
+function FindFunctions.all(x)
 	return x
 end
-FindFunctions.others = function(x)
+function FindFunctions.others(x)
 	return {unpack(x, 2)}
 end
-FindFunctions.friends = function(x)
+function FindFunctions.friends(x)
 	local z = {}
 	for _, v in next, x do
 		if v ~= ME and ME:IsFriendsWith(v.UserId) then
@@ -145,7 +148,7 @@ FindFunctions.friends = function(x)
 	end
 	return z
 end
-FindFunctions.nonfriends = function(x)
+function FindFunctions.nonfriends(x)
 	local z = {}
 	for _, v in next, x do
 		if v ~= ME and not ME:IsFriendsWith(v.UserId) then
@@ -154,7 +157,7 @@ FindFunctions.nonfriends = function(x)
 	end
 	return z
 end
-FindFunctions.team = function(x)
+function FindFunctions.team(x)
 	local z = {}
 	for _, v in next, x do
 		if v ~= ME and v.Team == ME.Team then
@@ -163,7 +166,7 @@ FindFunctions.team = function(x)
 	end
 	return z
 end
-FindFunctions.nonteam = function(x)
+function FindFunctions.nonteam(x)
 	local z = {}
 	for _, v in next, x do
 		if v ~= ME and v.Team ~= ME.Team then
@@ -172,10 +175,10 @@ FindFunctions.nonteam = function(x)
 	end
 	return z
 end
-FindFunctions.random = function(x)
+function FindFunctions.random(x)
 	return {x[math.random(1, #x)]}
 end
-FindFunctions.furthest = function(x)
+function FindFunctions.furthest(x)
 	local dist, z = 0, false
 	for _, v in next, x do
 		local x = v ~= ME and v.Character and EpikAPI.GetRoot(v.Character)
@@ -188,7 +191,7 @@ FindFunctions.furthest = function(x)
 	end
 	return {z}
 end
-FindFunctions.closest = function(x)
+function FindFunctions.closest(x)
 	local dist, z = math.huge, false
 	for _, v in next, x do
 		local x = v ~= ME and v.Character and EpikAPI.GetRoot(v.Character)
@@ -201,10 +204,11 @@ FindFunctions.closest = function(x)
 	end
 	return {z}
 end
-FindFunctions.FromName = function(x, e)
+function FindFunctions.FromName(x, e)
 	local z = {}
+	e = "^" .. EpikAPI.RegexSafe(e)
 	for _, v in next, x do
-		if v.Name:sub(1, #e):lower() == e or v.DisplayName:sub(1, #e):lower() == e and not table.find(z, v) then
+		if (v.Name:lower():find(e) or v.DisplayName:lower():find(e)) and not table.find(z, v) then
 			z[#z + 1] = v
 		end
 	end
@@ -296,4 +300,4 @@ function EpikAPI.Notify(title, text, dur)
 	end
 	GS.StarterGui:SetCore("SendNotification", t)
 end
-return EpikAPI, "EOS#3333 (ID: 992607884703711283)"
+return EpikAPI

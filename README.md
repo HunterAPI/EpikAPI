@@ -31,6 +31,9 @@ table.foreach(getproperties(Part), print) -- example to show it returns the part
 -- Returns the character's RootPart or Torso or Head or a BasePart Instance. If no arguments are passed, it'll defaul to the LocalPlayer's Character
 EpikAPI.GetRoot(character)
 
+-- Returns the string with all regex magic characters escaped
+EpikAPI.RegexSafe("Hey.") --> "Hey%."
+
 -- Returns a table of all the found players
 -- Key words: me, all, others, friends, nonfriends, team, nonteam, random, furthest, closest
 -- You can combine keywords like this "me,friends,johndoe,janedoe"
